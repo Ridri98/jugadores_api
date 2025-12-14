@@ -9,7 +9,8 @@ app.use(express.json());
 
 // ✅ CONFIG SUPABASE (TU URL + TU KEY)
 const SUPABASE_URL = "https://xisfxzxskdghtzologjd.supabase.co";
-const SUPABASE_API_KEY = "sb_secret_IQE8Js2P1_vM7968dlbzfg_FuqIRG8h";
+const SUPABASE_API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhpc2Z4enhza2RnaHR6b2xvZ2pkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkzNDU0NjEsImV4cCI6MjA3NDkyMTQ2MX0.9IXz3cAWk7g6BRSSxUUKn1RGHo2OlrUEb0uNCwoq5Vo";
+
 
 const getSupabaseHeaders = (method = 'GET') => {
     const headers = {
