@@ -157,6 +157,29 @@ app.delete('/jugadores/:id', async (req, res) => {
 });
 
 /* ============================================================
+   ✅ LISTAR TRANSACCIONES
+   ============================================================ */
+app.get('/transacciones', async (req, res) => {
+    try {
+        const response = await fetch(
+            `${SUPABASE_URL}/rest/v1/Transacciones?select=*`,
+            { method: "GET", headers: getSupabaseHeaders() }
+        );
+
+        const result = await response.json();
+
+        if (response.ok) {
+            res.status(200).json(result);
+        } else {
+            res.status(response.status).json({ error: result.message || 'Error al obtener transacciones.' });
+        }
+    } catch (error) {
+        console.error("Error en /transacciones:", error);
+        res.status(500).json({ error: 'Error del servidor al obtener transacciones.' });
+    }
+});
+
+/* ============================================================
    ✅ SERVIDOR LOCAL (solo en desarrollo)
    ============================================================ */
 if (process.env.NODE_ENV !== 'production') {
