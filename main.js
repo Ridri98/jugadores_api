@@ -7,13 +7,14 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// ✅ CONFIG SUPABASE
-const SUPABASE_API_KEY = process.env.SUPABASE_API_KEY || "TU_API_KEY";
-const SUPABASE_URL = "https://gjjdrpqrkcxifwouyksh.supabase.co";
+// ✅ CONFIG SUPABASE (CORRECTO)
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_API_KEY = process.env.SUPABASE_API_KEY;
 
 const getSupabaseHeaders = (method = 'GET') => {
     const headers = {
         "apikey": SUPABASE_API_KEY,
+        "Authorization": `Bearer ${SUPABASE_API_KEY}`,
         "Content-Type": "application/json",
     };
 
