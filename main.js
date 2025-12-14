@@ -7,9 +7,9 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// ✅ CONFIG SUPABASE (CORRECTO)
-const SUPABASE_URL = process.env.SUPABASE_URL;
-const SUPABASE_API_KEY = process.env.SUPABASE_API_KEY;
+// ✅ CONFIG SUPABASE (TU URL + TU KEY)
+const SUPABASE_URL = "https://xisfxzxskdghtzologjd.supabase.co";
+const SUPABASE_API_KEY = "sb_secret_IQE8Js2P1_vM7968dlbzfg_FuqIRG8h";
 
 const getSupabaseHeaders = (method = 'GET') => {
     const headers = {
