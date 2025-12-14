@@ -30,7 +30,7 @@ const getSupabaseHeaders = (method = 'GET') => {
 app.get('/jugadores', async (req, res) => {
     try {
         const response = await fetch(
-            `${SUPABASE_URL}/rest/v1/Jugadores?select=*`,
+            `${SUPABASE_URL}/rest/v1/Jugador?select=*`,
             { method: "GET", headers: getSupabaseHeaders() }
         );
 
