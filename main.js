@@ -7,10 +7,10 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// ✅ CONFIG SUPABASE (TU URL + TU KEY)
-const SUPABASE_URL = "https://xisfxzxskdghtzologjd.supabase.co";
-const SUPABASE_API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhpc2Z4enhza2RnaHR6b2xvZ2pkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkzNDU0NjEsImV4cCI6MjA3NDkyMTQ2MX0.9IXz3cAWk7g6BRSSxUUKn1RGHo2OlrUEb0uNCwoq5Vo";
-
+// ✅ CONFIG SUPABASE
+// Nota: Usamos process.env para que funcione en Vercel, y el string fijo como respaldo para tu local.
+const SUPABASE_URL = process.env.SUPABASE_URL || "https://xisfxzxskdghtzologjd.supabase.co";
+const SUPABASE_API_KEY = process.env.SUPABASE_API_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhpc2Z4enhza2RnaHR6b2xvZ2pkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkzNDU0NjEsImV4cCI6MjA3NDkyMTQ2MX0.9IXz3cAWk7g6BRSSxUUKn1RGHo2OlrUEb0uNCwoq5Vo";
 
 const getSupabaseHeaders = (method = 'GET') => {
     const headers = {
@@ -30,6 +30,7 @@ const getSupabaseHeaders = (method = 'GET') => {
    ============================================================ */
 app.get('/jugadores', async (req, res) => {
     try {
+        // CORREGIDO: jugador
         const response = await fetch(
             `${SUPABASE_URL}/rest/v1/jugador?select=*`,
             { method: "GET", headers: getSupabaseHeaders() }
@@ -59,7 +60,8 @@ app.post('/jugadores/crear', async (req, res) => {
     }
 
     try {
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/Jugadores`, {
+        // CORREGIDO: jugador
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/jugador`, {
             method: 'POST',
             headers: getSupabaseHeaders('POST'),
             body: JSON.stringify(jugadorData),
@@ -93,8 +95,9 @@ app.patch('/jugadores/actualizar', async (req, res) => {
     }
 
     try {
+        // CORREGIDO: Ahora apunta a 'jugador' (antes decía Jugadores)
         const response = await fetch(
-            `${SUPABASE_URL}/rest/v1/Jugadores?id=eq.${id}`,
+            `${SUPABASE_URL}/rest/v1/jugador?id=eq.${id}`,
             {
                 method: 'PATCH',
                 headers: getSupabaseHeaders('PATCH'),
@@ -132,8 +135,9 @@ app.delete('/jugadores/:id', async (req, res) => {
     }
 
     try {
+        // CORREGIDO: Ahora apunta a 'jugador' (antes decía Jugadores)
         const response = await fetch(
-            `${SUPABASE_URL}/rest/v1/Jugadores?id=eq.${id}`,
+            `${SUPABASE_URL}/rest/v1/jugador?id=eq.${id}`,
             {
                 method: 'DELETE',
                 headers: getSupabaseHeaders('DELETE'),
