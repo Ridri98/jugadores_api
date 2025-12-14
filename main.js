@@ -162,7 +162,7 @@ app.delete('/jugadores/:id', async (req, res) => {
 app.get('/transacciones', async (req, res) => {
     try {
         const response = await fetch(
-            `${SUPABASE_URL}/rest/v1/Transacciones?select=*`,
+            `${SUPABASE_URL}/rest/v1/transacciones?select=*`,
             { method: "GET", headers: getSupabaseHeaders() }
         );
 
