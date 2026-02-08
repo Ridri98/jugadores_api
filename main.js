@@ -49,6 +49,40 @@ app.get('/jugadores', async (req, res) => {
     }
 });
 
+//Crear
+app.post('/jugadores/crear', async (req, res) => {
+    const jugadorData = req.body;
+
+    if (!jugadorData.nombre || !jugadorData.id_Clup || !jugadorData.paisId) {
+        return res.status(400).json({ error: 'Faltan campos obligatorios: nombre, id_Clup, paisId.' });
+    }
+
+    try {
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/jugador`, {
+            method: 'POST',
+            headers: getSupabaseHeaders('POST'),
+            body: JSON.stringify(jugadorData),
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.length > 0) {
+            res.status(201).json({
+                success: true,
+                jugador: result[0],
+                message: 'Jugador creado exitosamente.'
+            });
+        } else {
+            res.status(400).json({ error: result.message || 'Error al crear el jugador.' });
+        }
+    } catch (error) {
+        console.error("Error en /jugadores/crear:", error);
+        res.status(500).json({ error: 'Error del servidor al crear jugador.' });
+    }
+});
+
+/*
+
 /* ============================================================
    ✅ CREAR JUGADOR
    ============================================================ */
@@ -83,6 +117,8 @@ app.post('/jugadores/crear', async (req, res) => {
         res.status(500).json({ error: 'Error del servidor al crear jugador.' });
     }
 });
+
+*/
 
 /* ============================================================
    ✅ ACTUALIZAR JUGADOR
