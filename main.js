@@ -8,7 +8,6 @@ app.use(cors());
 app.use(express.json());
 
 // ✅ CONFIG SUPABASE
-// Nota: Usamos process.env para que funcione en Vercel, y el string fijo como respaldo para tu local.
 const SUPABASE_URL = process.env.SUPABASE_URL || "https://xisfxzxskdghtzologjd.supabase.co";
 const SUPABASE_API_KEY = process.env.SUPABASE_API_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhpc2Z4enhza2RnaHR6b2xvZ2pkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkzNDU0NjEsImV4cCI6MjA3NDkyMTQ2MX0.9IXz3cAWk7g6BRSSxUUKn1RGHo2OlrUEb0uNCwoq5Vo";
 
@@ -25,14 +24,20 @@ const getSupabaseHeaders = (method = 'GET') => {
     return headers;
 };
 
+// Ruta raíz
+app.get('/', (req, res) => {
+    res.status(200).json({ status: 'API de Jugadores y Transferencias funcionando correctamente' });
+});
+
 /* ============================================================
-   ✅ LISTAR JUGADORES
+   ✅ JUGADORES
    ============================================================ */
+
+// Listar Jugadores
 app.get('/jugadores', async (req, res) => {
     try {
-        // CORREGIDO: jugador
         const response = await fetch(
-            `${SUPABASE_URL}/rest/v1/jugador?select=*`,
+            `${SUPABASE_URL}/rest/v1/jugadores?select=*`,
             { method: "GET", headers: getSupabaseHeaders() }
         );
 
@@ -49,17 +54,16 @@ app.get('/jugadores', async (req, res) => {
     }
 });
 
-//Crear
+// Crear Jugador
 app.post('/jugadores/crear', async (req, res) => {
     const jugadorData = req.body;
     
-if (!jugadorData.Nombre || !jugadorData.Apellido || !jugadorData.id_Clup || !jugadorData.id_Pais) {
-    return res.status(400).json({ error: 'Faltan campos obligatorios: Nombre, Apellido, id_Clup, id_Pais.' });
-}
-
+    if (!jugadorData.Nombre || !jugadorData.id_Clup || !jugadorData.id_Pais) {
+        return res.status(400).json({ error: 'Faltan campos obligatorios: Nombre, id_Clup, id_Pais.' });
+    }
 
     try {
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/jugador`, {
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/jugadores`, {
             method: 'POST',
             headers: getSupabaseHeaders('POST'),
             body: JSON.stringify(jugadorData),
@@ -82,22 +86,17 @@ if (!jugadorData.Nombre || !jugadorData.Apellido || !jugadorData.id_Clup || !jug
     }
 });
 
-
-
-/* ============================================================
-   ✅ ACTUALIZAR JUGADOR
-   ============================================================ */
+// Actualizar Jugador
 app.patch('/jugadores/actualizar', async (req, res) => {
-    const { id, ...updateData } = req.body;
+    const { id_Jugador, ...updateData } = req.body;
 
-    if (!id) {
-        return res.status(400).json({ error: 'ID del jugador es requerido para actualizar.' });
+    if (!id_Jugador) {
+        return res.status(400).json({ error: 'ID del jugador (id_Jugador) es requerido para actualizar.' });
     }
 
     try {
-        // CORREGIDO: Ahora apunta a 'jugador' (antes decía Jugadores)
         const response = await fetch(
-            `${SUPABASE_URL}/rest/v1/jugador?id=eq.${id}`,
+            `${SUPABASE_URL}/rest/v1/jugadores?id_Jugador=eq.${id_Jugador}`,
             {
                 method: 'PATCH',
                 headers: getSupabaseHeaders('PATCH'),
@@ -124,9 +123,7 @@ app.patch('/jugadores/actualizar', async (req, res) => {
     }
 });
 
-/* ============================================================
-   ✅ ELIMINAR JUGADOR
-   ============================================================ */
+// Eliminar Jugador
 app.delete('/jugadores/:id', async (req, res) => {
     const { id } = req.params;
 
@@ -135,9 +132,8 @@ app.delete('/jugadores/:id', async (req, res) => {
     }
 
     try {
-        // CORREGIDO: Ahora apunta a 'jugador' (antes decía Jugadores)
         const response = await fetch(
-            `${SUPABASE_URL}/rest/v1/jugador?id=eq.${id}`,
+            `${SUPABASE_URL}/rest/v1/jugadores?id_Jugador=eq.${id}`,
             {
                 method: 'DELETE',
                 headers: getSupabaseHeaders('DELETE'),
@@ -157,12 +153,12 @@ app.delete('/jugadores/:id', async (req, res) => {
 });
 
 /* ============================================================
-   ✅ LISTAR TRANSACCIONES
+   ✅ TRANSFERENCIAS
    ============================================================ */
-app.get('/transacciones', async (req, res) => {
+app.get('/transferencias', async (req, res) => {
     try {
         const response = await fetch(
-            `${SUPABASE_URL}/rest/v1/transacciones?select=*`,
+            `${SUPABASE_URL}/rest/v1/transferencias?select=*`,
             { method: "GET", headers: getSupabaseHeaders() }
         );
 
@@ -171,11 +167,57 @@ app.get('/transacciones', async (req, res) => {
         if (response.ok) {
             res.status(200).json(result);
         } else {
-            res.status(response.status).json({ error: result.message || 'Error al obtener transacciones.' });
+            res.status(response.status).json({ error: result.message || 'Error al obtener transferencias.' });
         }
     } catch (error) {
-        console.error("Error en /transacciones:", error);
-        res.status(500).json({ error: 'Error del servidor al obtener transacciones.' });
+        console.error("Error en /transferencias:", error);
+        res.status(500).json({ error: 'Error del servidor al obtener transferencias.' });
+    }
+});
+
+/* ============================================================
+   ✅ CLUBES
+   ============================================================ */
+app.get('/clubes', async (req, res) => {
+    try {
+        const response = await fetch(
+            `${SUPABASE_URL}/rest/v1/clubes?select=*`,
+            { method: "GET", headers: getSupabaseHeaders() }
+        );
+
+        const result = await response.json();
+
+        if (response.ok) {
+            res.status(200).json(result);
+        } else {
+            res.status(response.status).json({ error: result.message || 'Error al obtener clubes.' });
+        }
+    } catch (error) {
+        console.error("Error en /clubes:", error);
+        res.status(500).json({ error: 'Error del servidor al obtener clubes.' });
+    }
+});
+
+/* ============================================================
+   ✅ PAÍSES
+   ============================================================ */
+app.get('/pais', async (req, res) => {
+    try {
+        const response = await fetch(
+            `${SUPABASE_URL}/rest/v1/pais?select=*`,
+            { method: "GET", headers: getSupabaseHeaders() }
+        );
+
+        const result = await response.json();
+
+        if (response.ok) {
+            res.status(200).json(result);
+        } else {
+            res.status(response.status).json({ error: result.message || 'Error al obtener países.' });
+        }
+    } catch (error) {
+        console.error("Error en /pais:", error);
+        res.status(500).json({ error: 'Error del servidor al obtener países.' });
     }
 });
 
