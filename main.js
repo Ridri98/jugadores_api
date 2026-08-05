@@ -3,15 +3,15 @@ const app = express();
 const cors = require('cors');
 const fetch = require('node-fetch');
 
-//Forzamos a Vercel
+//forzamos a vercel
 
 const PORT = process.env.PORT || 3000;
 
-// Corrección aplicada aquí 👇
+// Corrección aplicada aquí 
 app.use(cors());
 app.use(express.json());
 
-// ✅ CONFIG SUPABASE
+// configuracion supabase
 const SUPABASE_URL = process.env.SUPABASE_URL || "https://xisfxzxskdghtzologjd.supabase.co";
 const SUPABASE_API_KEY = process.env.SUPABASE_API_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhpc2Z4enhza2RnaHR6b2xvZ2pkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkzNDU0NjEsImV4cCI6MjA3NDkyMTQ2MX0.9IXz3cAWk7g6BRSSxUUKn1RGHo2OlrUEb0uNCwoq5Vo";
 
@@ -28,16 +28,16 @@ const getSupabaseHeaders = (method = 'GET') => {
     return headers;
 };
 
-// Ruta raíz
+// ruta raíz
 app.get('/', (req, res) => {
     res.status(200).json({ status: 'API de Jugadores y Transferencias funcionando correctamente' });
 });
 
 /* ============================================================
-   ✅ JUGADORES
+    Jugadores
    ============================================================ */
 
-// Listar Jugadores
+// Listas Jugadores
 app.get('/jugadores', async (req, res) => {
     try {
         const response = await fetch(
@@ -58,7 +58,7 @@ app.get('/jugadores', async (req, res) => {
     }
 });
 
-// Crear Jugador
+// crear jugador
 app.post('/jugadores/crear', async (req, res) => {
     const jugadorData = req.body;
 
@@ -149,7 +149,7 @@ app.patch('/jugadores/actualizar', async (req, res) => {
     }
 });
 
-// Eliminar Jugador
+// eliminar jugador
 app.delete('/jugadores/:id', async (req, res) => {
     const { id } = req.params;
 
@@ -178,9 +178,9 @@ app.delete('/jugadores/:id', async (req, res) => {
     }
 });
 
-/* ============================================================
-   ✅ TRANSFERENCIAS
-   ============================================================ */
+/* =====================================
+    Transferencia
+   ===================================== */
 app.get('/transferencias', async (req, res) => {
     try {
         const response = await fetch(
@@ -201,9 +201,9 @@ app.get('/transferencias', async (req, res) => {
     }
 });
 
-/* ============================================================
-   ✅ CLUBES
-   ============================================================ */
+/* ==================================
+      clubes
+   =================================== */
 app.get('/clubes', async (req, res) => {
     try {
         const response = await fetch(
@@ -224,9 +224,9 @@ app.get('/clubes', async (req, res) => {
     }
 });
 
-/* ============================================================
-   ✅ PAÍSES
-   ============================================================ */
+/* =====================================
+    Pa
+   ==================================== */
 app.get('/pais', async (req, res) => {
     try {
         const response = await fetch(
@@ -247,9 +247,9 @@ app.get('/pais', async (req, res) => {
     }
 });
 
-/* ============================================================
-   ✅ SERVIDOR LOCAL (solo en desarrollo)
-   ============================================================ */
+/* ===================
+    servidor local 
+   ================== */
 if (process.env.NODE_ENV !== 'production') {
     app.listen(PORT, () => {
         console.log(`Servidor corriendo en http://localhost:${PORT}`);
