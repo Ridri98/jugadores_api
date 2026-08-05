@@ -58,8 +58,8 @@ app.get('/jugadores', async (req, res) => {
 app.post('/jugadores/crear', async (req, res) => {
     const jugadorData = req.body;
     
-    if (!jugadorData.Nombre || !jugadorData.id_Clup || !jugadorData.id_Pais) {
-        return res.status(400).json({ error: 'Faltan campos obligatorios: Nombre, id_Clup, id_Pais.' });
+    if (!jugadorData.Nombre || !jugadorData.id_Club || !jugadorData.id_Pais) {
+        return res.status(400).json({ error: 'Faltan campos obligatorios: Nombre, id_Club, id_Pais.' });
     }
 
     try {
