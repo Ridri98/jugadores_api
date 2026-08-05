@@ -1,9 +1,11 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
-//const fetch = require('node-fetch');
+const fetch = require('node-fetch');
 
 const PORT = process.env.PORT || 3000;
+
+// Corrección aplicada aquí 👇
 app.use(cors());
 app.use(express.json());
 
@@ -53,6 +55,7 @@ app.get('/jugadores', async (req, res) => {
         res.status(500).json({ error: 'Error del servidor al obtener jugadores.' });
     }
 });
+
 // Crear Jugador
 app.post('/jugadores/crear', async (req, res) => {
     const jugadorData = req.body;
@@ -144,8 +147,13 @@ app.patch('/jugadores/actualizar', async (req, res) => {
     }
 });
 
+// Eliminar Jugador
 app.delete('/jugadores/:id', async (req, res) => {
     const { id } = req.params;
+
+    if (!id) {
+        return res.status(400).json({ error: 'ID del jugador es requerido para eliminar.' });
+    }
 
     try {
         const response = await fetch(
@@ -155,6 +163,19 @@ app.delete('/jugadores/:id', async (req, res) => {
                 headers: getSupabaseHeaders('DELETE'),
             }
         );
+
+        if (response.ok) {
+            res.status(200).json({ success: true, message: 'Jugador eliminado exitosamente.' });
+        } else {
+            const result = await response.json();
+            res.status(400).json({ error: result.message || 'Error al eliminar jugador.' });
+        }
+    } catch (error) {
+        console.error("Error en /jugadores/:id:", error);
+        res.status(500).json({ error: 'Error del servidor al eliminar jugador.' });
+    }
+});
+
 /* ============================================================
    ✅ TRANSFERENCIAS
    ============================================================ */
@@ -221,48 +242,6 @@ app.get('/pais', async (req, res) => {
     } catch (error) {
         console.error("Error en /pais:", error);
         res.status(500).json({ error: 'Error del servidor al obtener países.' });
-    }
-});
-
-// Eliminar País
-app.delete('/pais/:id', async (req, res) => {
-    const { id } = req.params;
-
-    if (!id) {
-        return res.status(400).json({
-            error: 'ID del país es requerido para eliminar.'
-        });
-    }
-
-    try {
-        const response = await fetch(
-            `${SUPABASE_URL}/rest/v1/pais?id_pais=eq.${id}`,
-            {
-                method: 'DELETE',
-                headers: getSupabaseHeaders('DELETE'),
-            }
-        );
-
-        if (response.ok) {
-            res.status(200).json({
-                success: true,
-                message: 'País eliminado exitosamente.'
-            });
-        } else {
-            const result = await response.json();
-
-            res.status(400).json({
-                error: result.message || 'Error al eliminar país.'
-            });
-        }
-
-    } catch (error) {
-
-        console.error("Error en /pais/:id:", error);
-
-        res.status(500).json({
-            error: 'Error del servidor al eliminar país.'
-        });
     }
 });
 
