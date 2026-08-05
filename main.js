@@ -159,7 +159,7 @@ app.delete('/jugadores/:id', async (req, res) => {
 
     try {
         const response = await fetch(
-            `${SUPABASE_URL}/rest/v1/jugadores?id_Jugador=eq.${id}`,
+            `${SUPABASE_URL}/rest/v1/jugadores?id_jugador=eq.${id}`,
             {
                 method: 'DELETE',
                 headers: getSupabaseHeaders('DELETE'),
