@@ -145,57 +145,16 @@ app.patch('/jugadores/actualizar', async (req, res) => {
 });
 
 app.delete('/jugadores/:id', async (req, res) => {
-
     const { id } = req.params;
 
-
-    if (!id) {
-        return res.status(400).json({
-            error: "ID del jugador requerido"
-        });
-    }
-
-
     try {
-
         const response = await fetch(
-            `${SUPABASE_URL}/rest/v1/jugadores?id_jugador=eq.${id}`,
+            `${SUPABASE_URL}/rest/v1/jugadores?id_Jugador=eq.${id}`,
             {
                 method: 'DELETE',
                 headers: getSupabaseHeaders('DELETE'),
             }
         );
-
-
-        if(response.ok){
-
-            res.json({
-                success:true,
-                message:"Jugador eliminado correctamente"
-            });
-
-        }else{
-
-            const error = await response.json();
-
-            res.status(400).json({
-                error:error.message || "No se pudo eliminar"
-            });
-
-        }
-
-
-    } catch(error){
-
-        console.log(error);
-
-        res.status(500).json({
-            error:"Error del servidor"
-        });
-
-    }
-
-});
 /* ============================================================
    ✅ TRANSFERENCIAS
    ============================================================ */
