@@ -242,6 +242,48 @@ app.get('/pais', async (req, res) => {
     }
 });
 
+// Eliminar País
+app.delete('/pais/:id', async (req, res) => {
+    const { id } = req.params;
+
+    if (!id) {
+        return res.status(400).json({
+            error: 'ID del país es requerido para eliminar.'
+        });
+    }
+
+    try {
+        const response = await fetch(
+            `${SUPABASE_URL}/rest/v1/pais?id_pais=eq.${id}`,
+            {
+                method: 'DELETE',
+                headers: getSupabaseHeaders('DELETE'),
+            }
+        );
+
+        if (response.ok) {
+            res.status(200).json({
+                success: true,
+                message: 'País eliminado exitosamente.'
+            });
+        } else {
+            const result = await response.json();
+
+            res.status(400).json({
+                error: result.message || 'Error al eliminar país.'
+            });
+        }
+
+    } catch (error) {
+
+        console.error("Error en /pais/:id:", error);
+
+        res.status(500).json({
+            error: 'Error del servidor al eliminar país.'
+        });
+    }
+});
+
 /* ============================================================
    ✅ SERVIDOR LOCAL (solo en desarrollo)
    ============================================================ */
