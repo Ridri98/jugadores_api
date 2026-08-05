@@ -53,13 +53,19 @@ app.get('/jugadores', async (req, res) => {
         res.status(500).json({ error: 'Error del servidor al obtener jugadores.' });
     }
 });
-
 // Crear Jugador
 app.post('/jugadores/crear', async (req, res) => {
     const jugadorData = req.body;
-    
-    if (!jugadorData.Nombre || !jugadorData.id_Club || !jugadorData.id_Pais) {
-        return res.status(400).json({ error: 'Faltan campos obligatorios: Nombre, id_Club, id_Pais.' });
+
+    if (
+        !jugadorData.nombre ||
+        !jugadorData.apellido ||
+        !jugadorData.fk_id_club ||
+        !jugadorData.fk_id_pais
+    ) {
+        return res.status(400).json({
+            error: 'Faltan campos obligatorios: nombre, apellido, fk_id_club, fk_id_pais.'
+        });
     }
 
     try {
@@ -78,25 +84,31 @@ app.post('/jugadores/crear', async (req, res) => {
                 message: 'Jugador creado exitosamente.'
             });
         } else {
-            res.status(400).json({ error: result.message || 'Error al crear el jugador.' });
+            res.status(400).json({
+                error: result.message || 'Error al crear el jugador.'
+            });
         }
     } catch (error) {
         console.error("Error en /jugadores/crear:", error);
-        res.status(500).json({ error: 'Error del servidor al crear jugador.' });
+        res.status(500).json({
+            error: 'Error del servidor al crear jugador.'
+        });
     }
 });
 
 // Actualizar Jugador
 app.patch('/jugadores/actualizar', async (req, res) => {
-    const { id_Jugador, ...updateData } = req.body;
+    const { id_jugador, ...updateData } = req.body;
 
-    if (!id_Jugador) {
-        return res.status(400).json({ error: 'ID del jugador (id_Jugador) es requerido para actualizar.' });
+    if (!id_jugador) {
+        return res.status(400).json({
+            error: 'El id_jugador es requerido para actualizar.'
+        });
     }
 
     try {
         const response = await fetch(
-            `${SUPABASE_URL}/rest/v1/jugadores?id_Jugador=eq.${id_Jugador}`,
+            `${SUPABASE_URL}/rest/v1/jugadores?id_jugador=eq.${id_jugador}`,
             {
                 method: 'PATCH',
                 headers: getSupabaseHeaders('PATCH'),
@@ -106,20 +118,29 @@ app.patch('/jugadores/actualizar', async (req, res) => {
 
         const result = await response.json();
 
-        if (response.ok && result.length > 0) {
-            res.status(200).json({
+        if (!response.ok) {
+            return res.status(response.status).json({
+                error: result.message || result.error || 'Error al actualizar jugador.'
+            });
+        }
+
+        if (Array.isArray(result) && result.length > 0) {
+            return res.status(200).json({
                 success: true,
                 jugador: result[0],
                 message: 'Jugador actualizado exitosamente.'
             });
-        } else if (response.ok && result.length === 0) {
-            res.status(404).json({ error: 'Jugador no encontrado.' });
-        } else {
-            res.status(400).json({ error: result.message || 'Error al actualizar jugador.' });
         }
+
+        return res.status(404).json({
+            error: 'Jugador no encontrado.'
+        });
+
     } catch (error) {
         console.error("Error en /jugadores/actualizar:", error);
-        res.status(500).json({ error: 'Error del servidor al actualizar jugador.' });
+        res.status(500).json({
+            error: 'Error del servidor al actualizar jugador.'
+        });
     }
 });
 
