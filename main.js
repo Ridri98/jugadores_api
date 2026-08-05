@@ -4,7 +4,7 @@ const cors = require('cors');
 const fetch = require('node-fetch');
 
 const PORT = process.env.PORT || 3000;
-app.use(cors()
+app.use(cors());
 app.use(express.json());
 
 // ✅ CONFIG SUPABASE
