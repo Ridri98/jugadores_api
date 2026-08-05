@@ -3,6 +3,8 @@ const app = express();
 const cors = require('cors');
 const fetch = require('node-fetch');
 
+//Forzamos a Vercel
+
 const PORT = process.env.PORT || 3000;
 
 // Corrección aplicada aquí 👇
